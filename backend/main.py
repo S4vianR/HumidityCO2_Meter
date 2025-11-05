@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from co2_meter import get_co2_levels
+from gas_meter import get_gas_levels
 from humidity_meter import get_humidity
 
 app = FastAPI()
@@ -19,8 +19,8 @@ async def root():
 
 @app.get("/api/{name}")
 async def get_meter(name: str):
-    if name == "co2":
-        result = get_co2_levels()
+    if name == "gas":
+        result = get_gas_levels()
     elif name == "humidity":
         result = get_humidity()
     else:

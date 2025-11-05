@@ -2,25 +2,11 @@
   <div class="h-svh w-svw font-sans">
     <NavBar />
     <MainLayout>
-      <section class="p-4">
-        <h2 class="text-2xl font-bold mb-4">Bienvenido al Medidor de Humedad y CO2</h2>
-        <p class="mb-2">Esta es la página principal de la aplicación para monitorear los niveles de humedad y CO2.</p>
-        <p>
-          <span class="font-bold">Niveles actuales de Humedad: </span>
-          <span v-if="datos_humedad">{{ datos_humedad }}</span>
-          <span v-else>No disponible</span>
-        </p>
-        <p class="mb-4">
-          <span class="font-bold">Niveles actuales de CO2: </span>
-          <span v-if="datos_co2">{{ datos_co2 }}</span>
-          <span v-else>No disponible</span>
-        </p>
-        <button class="py-1 px-2 border rounded-lg cursor-pointer transition-colors hover:bg-slate-700 hover:text-white hover:border-white" @click="getHumidityData">
-          Pedir datos de humedad
-        </button>
-        <button class="ml-4 py-1 px-2 border rounded-lg cursor-pointer transition-colors hover:bg-slate-700 hover:text-white hover:border-white" @click="getCO2Data">
-          Pedir datos de CO2
-        </button>
+      <section class="min-w-full min-h-11/12 flex flex-col justify-center items-center">
+        <h2 class="text-2xl font-bold text-center my-4">
+          Bienvenido al Medidor de Humedad y Gas
+        </h2>
+        <BentoGrid :cards="cards" />
       </section>
     </MainLayout>
   </div>
@@ -29,49 +15,58 @@
 <script setup lang="ts">
 // Setup del titulo de la página
 useHead({
-  title: 'Medidor Humedad/CO2 - Home',
+  title: 'Medidor Humedad/Gas - Home',
   meta: [
-    { name: 'description', content: 'Página principal del Medidor de Humedad y CO2' }
+    { name: 'description', content: 'Página principal del Medidor de Humedad y Gas' }
   ]
 })
-import { ref } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 
 const datos_humedad = ref<string>('')
-const datos_co2 = ref<string>('')
+const datos_gas = ref<string>('')
 
 const getHumidityData = async () => {
-  // Fetch localhost:8000/api/humidity
   try {
     const response = await fetch('http://localhost:8000/api/humidity')
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
     const json = await response.json()
-  // Mostrar el campo "message" que devuelve el backend
-  datos_humedad.value = String(json.message ?? '')
+    datos_humedad.value = String(json.message ?? '')
   } catch (error) {
     console.error('Error al obtener datos de humedad:', error)
+    datos_humedad.value = ''
   }
 }
 
-const getCO2Data = async () => {
-  // Fetch localhost:8000/api/co2
+const getGasData = async () => {
   try {
-    const response = await fetch('http://localhost:8000/api/co2')
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
+    const response = await fetch('http://localhost:8000/api/gas')
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
     const json = await response.json()
-  // Mostrar el campo "message" que devuelve el backend
-  datos_co2.value = String(json.message ?? '')
+    datos_gas.value = String(json.message ?? '')
   } catch (error) {
-    console.error('Error al obtener datos de CO2:', error)
+    console.error('Error al obtener datos de Gas:', error)
+    datos_gas.value = ''
   }
 }
 
 onMounted(() => {
-  // Obtener datos iniciales al montar el componente
   getHumidityData()
-  getCO2Data()
+  getGasData()
+  setInterval(() => {
+    getHumidityData()
+    getGasData()
+  }, 300000)
+})
+
+// Computed cards para el BentoGrid — reactivo a los valores actuales
+const cards = computed(() => {
+  const now = new Date()
+  return [
+    { id: 'hum', title: 'Humedad', subtitle: 'Sensor A', value: datos_humedad.value || '—', cols: 3, rows: 2 },
+    { id: 'gas', title: 'Gas', subtitle: 'Sensor B', value: datos_gas.value || '—', cols: 3, rows: 2 },
+    { id: 'last', title: 'Última actualización', value: now.toLocaleTimeString(), cols: 2, rows: 1 },
+    { id: 'conn', title: 'Conexión', value: 'OK', cols: 2, rows: 1 },
+    { id: 'summary', title: 'Resumen', value: 'Normal', cols: 2, rows: 1 }
+  ]
 })
 </script>
