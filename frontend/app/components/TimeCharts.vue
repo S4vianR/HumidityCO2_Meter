@@ -1,12 +1,11 @@
 <template>
   <div class="w-full max-w-4xl my-4 p-4 bg-white/60 rounded shadow">
-    <h3 class="text-lg font-semibold mb-2">Gráficas: Temperatura, Humedad y Diferencia</h3>
+    <h3 class="text-lg font-semibold mb-2">Gráficas: Temperatura y Humedad</h3>
     <div v-if="!hasSamples" class="text-sm text-gray-600">Esperando datos... (se mostrarán aquí las gráficas)</div>
     <canvas v-else ref="canvas" class="w-full" :height="height"></canvas>
     <div v-if="hasSamples" class="flex gap-4 mt-2 text-sm items-center">
       <span class="inline-flex items-center gap-2"><span class="w-3 h-3 rounded-full" :style="{background: colors.temp}"></span>Temperatura (°C)</span>
       <span class="inline-flex items-center gap-2"><span class="w-3 h-3 rounded-full" :style="{background: colors.hum}"></span>Humedad (%)</span>
-      <span class="inline-flex items-center gap-2"><span class="w-3 h-3 rounded-full" :style="{background: colors.diff}"></span>Diferencia (Temp - Hum)</span>
     </div>
   </div>
 </template>
@@ -46,9 +45,8 @@ function draw() {
   const times = samples.map(s => new Date(s.time))
   const temps = samples.map(s => s.temperatura)
   const hums = samples.map(s => s.humedad)
-  const diffs = samples.map((s, i) => (temps[i] ?? 0) - (hums[i] ?? 0))
 
-  const values = temps.concat(hums).concat(diffs)
+  const values = temps.concat(hums)
   let min = Math.min(...values)
   let max = Math.max(...values)
   // add small padding
@@ -118,8 +116,6 @@ function draw() {
   ctx.setLineDash([6, 4])
   drawLine(hums, colors.hum, 2)
   ctx.setLineDash([])
-  // draw diff (thin)
-  drawLine(diffs, colors.diff, 1.5)
 
   // legend handled below visually by HTML markers
 }
