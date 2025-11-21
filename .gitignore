@@ -1,0 +1,54 @@
+# Operating system
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# Node / web development (inside frontend/)
+frontend/node_modules/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+frontend/.pnpm-store/
+frontend/.vite/
+frontend/.parcel-cache/
+
+# Build / output folders (inside frontend/)
+frontend/dist/
+frontend/build/
+frontend/out/
+frontend/public/build/
+frontend/.next/
+frontend/.nuxt/
+frontend/.vuepress/dist/
+frontend/.storybook-static/
+
+# Caches, coverage, logs (inside frontend/)
+frontend/.cache/
+frontend/.cache-loader/
+frontend/.nyc_output/
+frontend/coverage/
+frontend/logs/
+frontend/*.log
+
+# Environment / secrets
+.env
+.env.*.local
+frontend/.env
+frontend/.env.*.local
+
+# Editors / IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.iml
+
+# Misc
+*.tgz
+*.zip
+*.swp
+*.tmp
+*.bak
+frontend/pnpm-lock.yaml
