@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-const RPI_IP = '192.168.1.187' as string
+const RPI_URL = '' as string
 
 // Setup del titulo de la página
 useHead({
@@ -32,7 +32,7 @@ const datos_gas = ref<string>('')
 const getDHT11Data = async () => {
   console.log('Obteniendo datos DHT11...')
   try {
-    const response = await fetch(`http://${RPI_IP}:8000/api/dht11`)
+    const response = await fetch(`${RPI_URL}/api/dht11`)
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
     const json = await response.json()
     console.log('Respuesta DHT11 recibida:', json)
@@ -49,7 +49,7 @@ const getDHT11Data = async () => {
 
 const getGasData = async () => {
   try {
-    const response = await fetch(`http://${RPI_IP}:8000/api/gas`)
+    const response = await fetch(`${RPI_URL}/api/gas`)
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
     const json = await response.json()
     datos_gas.value = String(json.message ?? '')
