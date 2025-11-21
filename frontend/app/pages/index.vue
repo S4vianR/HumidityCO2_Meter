@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-const RPI_URL = '' as string
+const RPI_URL = 'https://sensor.rubr.xyz' as string
 
 // Setup del titulo de la página
 useHead({
